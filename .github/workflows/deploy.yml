@@ -1,5 +1,9 @@
 name: Build and deploy BYSHO
 
+concurrency:
+  group: bysho-production-deploy
+  cancel-in-progress: true
+
 on:
   push:
     branches:
