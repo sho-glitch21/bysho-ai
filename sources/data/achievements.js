@@ -5,58 +5,58 @@ export default
 [
     [
         'landingLeave',
-        'I’m going on an adventure!',
+        'Let’s build something.',
         'Get out of the landing area.',
         1
     ],
     [
         'areas',
         'Traveler',
-        'Vist every area.',
+        'Explore every area.',
         13,
         true // Unique
     ],
     [
         'projects',
-        'But can you fix the wifi?',
-        'Check every project in the <strong>projects</strong> area.',
+        'Builder mode.',
+        'Explore every project in the <strong>projects</strong> area.',
         projectsData.length,
         true // Unique
     ],
     [
         'lab',
-        'I\'m a bit of a scientist myself',
+        'A bit of a scientist myself',
         'Check every project in the <strong>lab</strong> area.',
         labData.length,
         true // Unique
     ],
     [
         'cookie',
-        'Wake & bake',
+        'Boot sequence',
         'Accept <strong>1</strong> cookies.',
         1
     ],
     [
         'cookie',
-        'Making some dough',
+        'Making progress',
         'Accept <strong>10</strong> cookies.',
         10
     ],
     [
         'cookie',
-        'So baked right now',
+        'Deep in the build',
         'Accept <strong>100</strong> cookies.',
         100
     ],
     [
         'cookie',
-        'Cookie Clicker',
+        'Iteration machine',
         'Accept <strong>1000</strong> cookies.',
         1000
     ],
     [
         'whisper',
-        'It\'s About Sending A Message',
+        'Send a message',
         'Post a whisper.',
         1
     ],
@@ -93,19 +93,19 @@ export default
     [
         'honk',
         'Honk',
-        'Honk me like one of your french driver.',
+        'Use the horn.',
         10
     ],
     [
         'explosiveCrates',
-        'Great Explosion Murder God Dynamight',
+        'Controlled chaos',
         'Blow up every explosive crate.',
         20,
         true // Unique
     ],
     [
         'goHigh',
-        'Limit the sky',
+        'Break the ceiling',
         'Reach <strong>15 meters</strong> high.',
         15
     ],
@@ -123,25 +123,25 @@ export default
     ],
     [
         'circuitFinish',
-        'Participation medal',
+        'First run',
         'Finish a race.',
         1
     ],
     [
         'circuitFinishFast',
-        'KA-CHOW!',
+        'Full send',
         'Finish a race in less than <strong>30s</strong>.',
         1
     ],
     [
         'circuitLeaderboard',
-        'Early Bird gets the Worm',
+        'First mover',
         'Make it to the leaderboard.',
         1
     ],
     [
         'fullDay',
-        'Don’t you have work to do?',
+        'Stay curious',
         'Spend a full day cycle here in one go.',
         1
     ],
@@ -159,19 +159,19 @@ export default
     ],
     [
         'distanceDriven',
-        'Honey, I’m home!',
+        'Welcome back',
         'Drive 100km.',
         100
     ],
     [
         'sacrifice',
-        'One for the god of Chaos',
+        'Into the unknown',
         'Sacrifice yourself into the altar.',
         1
     ],
     [
         'cataclysm',
-        'Witness me!',
+        'Witness the world change',
         'Witness a cataclysm',
         1
     ],
@@ -207,13 +207,13 @@ export default
     ],
     [
         'reset',
-        'Clean your room',
+        'Reset the world',
         'Put back everything as it was.',
         1
     ],
     [
         'statueDown',
-        'Revolution!',
+        'Change the world',
         'Tear that statue down.',
         1
     ],
@@ -231,7 +231,7 @@ export default
     ],
     [
         'hacker',
-        'Hacker',
+        'System thinker',
         'This one can’t be achieved.',
         1
     ],
