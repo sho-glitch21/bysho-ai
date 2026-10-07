@@ -69,6 +69,8 @@ export class Game
 
     async init()
     {
+        window.__BYSHO_BOOT_STAGE__ = 'setup'
+
         // Setup
         this.domElement = document.querySelector('.game')
         this.canvasElement = this.domElement.querySelector('.js-canvas')
@@ -92,6 +94,7 @@ export class Game
         this.modals = new Modals()
         this.menu = new Menu()
         this.rendering = new Rendering()
+        window.__BYSHO_BOOT_STAGE__ = 'renderer.init'
         await this.rendering.setRenderer()
 
         const compressed = !!import.meta.env.VITE_COMPRESSED
@@ -100,6 +103,7 @@ export class Game
         const compressedTextureExtension = compressed ? 'ktx' : 'png'
 
         const cb = '?cb=1'
+        window.__BYSHO_BOOT_STAGE__ = 'intro.resources'
         this.resources = await this.resourcesLoader.load([
             [ 'respawnsReferencesModel',    `respawns/respawnsReferences${compressedModelSuffix}.glb${cb}`, 'gltf' ],
             [ 'behindTheSceneStarsTexture', `behindTheScene/stars.${compressedTextureExtension}${cb}`,      compressedTextureFormat, (resource) => { resource.colorSpace = THREE.SRGBColorSpace; resource.minFilter = THREE.NearestFilter; resource.magFilter = THREE.NearestFilter; resource.generateMipmaps = false; resource.wrapS = THREE.RepeatWrapping; resource.wrapT = THREE.RepeatWrapping; } ],
@@ -178,6 +182,7 @@ export class Game
             }
         )
 
+        window.__BYSHO_BOOT_STAGE__ = 'world.resources + rapier'
         const [ newResources, RAPIER ] = await Promise.all([ resourcesPromise, rapierPromise ])
         this.RAPIER = RAPIER
         this.resources = { ...newResources, ...this.resources }
@@ -196,7 +201,9 @@ export class Game
         this.map = new Map()
         this.title = new Title()
         // this.monitoring = new Monitoring()
+        window.__BYSHO_BOOT_STAGE__ = 'world.step'
         this.world.step(1)
+        window.__BYSHO_BOOT_STAGE__ = 'ready'
         this.overlay = new Overlay()
 
         // Pre-render if quality high
