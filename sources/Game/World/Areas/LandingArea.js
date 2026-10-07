@@ -1,4 +1,6 @@
 import * as THREE from 'three/webgpu'
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
+import { TTFLoader } from 'three/addons/loaders/TTFLoader.js'
 import { color, float, Fn, instancedArray, mix, normalWorld, positionGeometry, step, texture, uniform, uv, vec2, vec3, vec4 } from 'three/tsl'
 import { Inputs } from '../../Inputs/Inputs.js'
 import { InteractivePoints } from '../../InteractivePoints.js'
@@ -28,12 +30,16 @@ export class LandingArea extends Area
         if(references.length === 0)
             return
 
-        // Remove the original portfolio owner's landing signature.
-        const positions = []
+        // Measure the original landing-sign geometry so the BYSHO replacement
+        // occupies the same visual footprint and orientation.
+        const bounds = new THREE.Box3()
+        let sourceMaterial = null
+
         for(const reference of references)
         {
-            const object = reference.userData.object
+            bounds.expandByObject(reference)
 
+            const object = reference.userData.object
             if(object)
             {
                 if(object.physical)
@@ -41,60 +47,75 @@ export class LandingArea extends Area
 
                 if(object.visual)
                 {
+                    if(!sourceMaterial)
+                    {
+                        object.visual.object3D.traverse((_child) =>
+                        {
+                            if(!sourceMaterial && _child.isMesh && _child.material)
+                                sourceMaterial = Array.isArray(_child.material) ? _child.material[0] : _child.material
+                        })
+                    }
+
                     object.visual.object3D.removeFromParent()
                     this.objects.hideable = this.objects.hideable.filter(_object3D => _object3D !== object.visual.object3D)
                 }
             }
-
-            const position = new THREE.Vector3()
-            reference.getWorldPosition(position)
-            positions.push(position)
         }
 
-        // Recreate the landing signature with BYSHO branding at the same spot.
-        const center = new THREE.Vector3()
-        for(const position of positions)
-            center.add(position)
-        center.multiplyScalar(1 / positions.length)
+        const center = bounds.getCenter(new THREE.Vector3())
+        const targetSize = bounds.getSize(new THREE.Vector3())
+        const orientation = references[0].getWorldQuaternion(new THREE.Quaternion())
 
-        const canvas = document.createElement('canvas')
-        canvas.width = 1600
-        canvas.height = 320
+        const loader = new TTFLoader()
+        loader.load(
+            './fonts/Pally-Medium.ttf',
+            (fontData) =>
+            {
+                const font = new THREE.Font(fontData)
 
-        const context = canvas.getContext('2d')
-        context.clearRect(0, 0, canvas.width, canvas.height)
-        context.font = '700 132px "Amatic SC", Arial, sans-serif'
-        context.textAlign = 'center'
-        context.textBaseline = 'middle'
-        context.fillStyle = '#fff4df'
-        context.shadowColor = 'rgba(0, 0, 0, 0.3)'
-        context.shadowBlur = 18
-        context.shadowOffsetY = 8
-        context.fillText('SHOAIB RAHMAN', canvas.width * 0.5, canvas.height * 0.5)
+                const geometry = new TextGeometry('SHOAIB RAHMAN',
+                {
+                    font,
+                    size: 1,
+                    depth: 0.22,
+                    curveSegments: 8,
+                    bevelEnabled: true,
+                    bevelThickness: 0.04,
+                    bevelSize: 0.025,
+                    bevelSegments: 2
+                })
 
-        const texture = new THREE.CanvasTexture(canvas)
-        texture.colorSpace = THREE.SRGBColorSpace
-        texture.minFilter = THREE.LinearFilter
-        texture.magFilter = THREE.LinearFilter
-        texture.generateMipmaps = false
-        texture.needsUpdate = true
+                geometry.computeBoundingBox()
+                const textSize = geometry.boundingBox.getSize(new THREE.Vector3())
+                geometry.center()
 
-        const material = new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true,
-            depthWrite: false,
-        })
+                const material = sourceMaterial?.clone?.() || new THREE.MeshStandardNodeMaterial({
+                    color: 0xf4a6a6,
+                    roughness: 0.7
+                })
 
-        const sprite = new THREE.Sprite(material)
-        sprite.position.copy(center)
-        sprite.position.y = Math.max(center.y, 2.6)
-        sprite.scale.set(8.5, 1.7, 1)
-        sprite.userData.byshoSignature = true
-        this.game.scene.add(sprite)
+                const mesh = new THREE.Mesh(geometry, material)
 
-        this.signature = { sprite, texture, canvas }
+                const widthScale = targetSize.x / Math.max(textSize.x, 0.001)
+                const heightScale = targetSize.y / Math.max(textSize.y, 0.001)
+                const scale = Math.min(widthScale, heightScale)
+
+                mesh.scale.setScalar(scale)
+                mesh.position.copy(center)
+                mesh.quaternion.copy(orientation)
+                mesh.userData.byshoSignature = true
+
+                this.game.scene.add(mesh)
+
+                this.signature = { mesh, geometry, material }
+            },
+            undefined,
+            (error) =>
+            {
+                console.error('BYSHO landing signature font failed to load', error)
+            }
+        )
     }
-
     setKiosk()
     {
         // Interactive point
