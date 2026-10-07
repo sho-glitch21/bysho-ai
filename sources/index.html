@@ -886,6 +886,46 @@
 
     </div>
 
+    <script>
+        (() => {
+            const show = (title, details) => {
+                const existing = document.querySelector('.js-boot-diagnostic');
+                if(existing) existing.remove();
+
+                const panel = document.createElement('pre');
+                panel.className = 'js-boot-diagnostic';
+                panel.style.cssText = 'position:fixed;inset:20px;z-index:999999;margin:0;padding:24px;overflow:auto;background:#120f16;color:#fff;font:14px/1.5 monospace;border:1px solid rgba(255,255,255,.25);border-radius:12px;white-space:pre-wrap;';
+                panel.textContent = title + '\n\n' + details;
+                document.body.appendChild(panel);
+            };
+
+            window.addEventListener('error', event => {
+                show('BYSHO SCRIPT ERROR', event.error?.stack || event.message || 'Unknown script/resource error');
+            });
+
+            window.addEventListener('unhandledrejection', event => {
+                show('BYSHO UNHANDLED ERROR', event.reason?.stack || event.reason?.message || String(event.reason));
+            });
+
+            window.setTimeout(() => {
+                if(!window.game) {
+                    const canvas = document.querySelector('.js-canvas');
+                    show(
+                        'BYSHO ENGINE DID NOT START',
+                        [
+                            'The page loaded, but the 3D engine did not initialize.',
+                            '',
+                            'WebGPU available: ' + ('gpu' in navigator),
+                            'Canvas found: ' + !!canvas,
+                            'URL: ' + location.href,
+                            '',
+                            'If this panel appears, send me a screenshot.'
+                        ].join('\n')
+                    );
+                }
+            }, 8000);
+        })();
+    </script>
     <script type="module" src="./index.js"></script>
 </body>
 </html>
