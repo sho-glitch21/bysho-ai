@@ -46,6 +46,7 @@ jobs:
           if [ -n "$ENTRY" ]; then
             cp "$ENTRY" assets/index-BjWEWmeb.js
             cp "$ENTRY" assets/index-BI5rdQLl.js
+            cp "$ENTRY" assets/index-Bltug6K2.js
           fi
           touch .nojekyll
           git add -A
