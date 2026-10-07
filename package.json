@@ -1,6 +1,6 @@
 {
-  "name": "bruno-simon-folio-2025",
-  "version": "0.0.0",
+  "name": "bysho-ai",
+  "version": "0.1.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -9,9 +9,9 @@
     "preview": "vite preview",
     "compress": "node scripts/compress.js static/"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "BYSHO",
+  "license": "MIT",
+  "description": "BYSHO — interactive portfolio and creative playground",
   "dependencies": {
     "@dimforge/rapier3d": "^0.17.3",
     "@gltf-transform/cli": "^4.1.0",
