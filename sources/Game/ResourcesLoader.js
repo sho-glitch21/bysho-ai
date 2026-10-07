@@ -86,10 +86,11 @@ export class ResourcesLoader
             }
 
             // Error
-            const error = (_file) =>
+            const error = (_file, _error) =>
             {
-                console.error(`Resources > Couldn't load file ${_file[1]}`)
-                reject(new Error(`Resource failed to load: ${_file[1]}`))
+                const url = _file?.[1] || 'unknown resource'
+                console.error(`Resources > Couldn't load file ${url}`, _error)
+                reject(new Error(`Resource failed to load: ${url}`, { cause: _error }))
             }
 
             // Each file
@@ -115,7 +116,7 @@ export class ResourcesLoader
                             progress()
                         },
                         undefined,
-                        error
+                        (_error) => error(_file, _error)
                     )
                 }
             }
