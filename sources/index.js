@@ -7,7 +7,7 @@ if(import.meta.env.VITE_LOG)
         ...consoleLog
     )
 
-const showBootError = (error) =>
+const showBootError = (error, label = 'BYSHO BOOT ERROR') =>
 {
     console.error('BYSHO boot error:', error)
 
@@ -31,19 +31,20 @@ const showBootError = (error) =>
         'white-space:pre-wrap',
     ].join(';')
 
-    element.textContent = 'BYSHO BOOT ERROR\\n\\n' + (error?.stack || error?.message || String(error))
+    const details = error?.stack || error?.message || (typeof error === 'string' ? error : JSON.stringify(error, Object.getOwnPropertyNames(error || {}), 2)) || String(error)
+    element.textContent = label + '\\n\\nStage: ' + (window.__BYSHO_BOOT_STAGE__ || 'unknown') + '\\n\\n' + details
     document.body.appendChild(element)
 }
 
 window.addEventListener('error', event =>
 {
-    if(event.error)
-        showBootError(event.error)
+    showBootError(event.error || new Error(event.message || 'Unknown window error'))
 })
 
 window.addEventListener('unhandledrejection', event =>
 {
-    showBootError(event.reason)
+    const reason = event.reason ?? new Error('Unhandled promise rejection with no reason')
+    showBootError(reason, 'BYSHO UNHANDLED REJECTION')
 })
 
 if(import.meta.env.VITE_GAME_PUBLIC)
