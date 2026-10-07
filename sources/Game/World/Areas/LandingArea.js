@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 import { TTFLoader } from 'three/addons/loaders/TTFLoader.js'
+import { Font } from 'three/addons/loaders/FontLoader.js'
 import { color, float, Fn, instancedArray, mix, normalWorld, positionGeometry, step, texture, uniform, uv, vec2, vec3, vec4 } from 'three/tsl'
 import { Inputs } from '../../Inputs/Inputs.js'
 import { InteractivePoints } from '../../InteractivePoints.js'
