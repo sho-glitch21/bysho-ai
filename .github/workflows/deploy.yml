@@ -41,6 +41,7 @@ jobs:
           git checkout --orphan gh-pages
           git rm -rf . || true
           cp -r /tmp/bysho-dist/. .
+          printf '%s\n' 'bysho.ai' > CNAME
           # Keep aliases for entry bundles that may still be referenced by cached Porkbun HTML.
           ENTRY=$(find assets -maxdepth 1 -type f -name 'index-*.js' | head -n 1)
           if [ -n "$ENTRY" ]; then
