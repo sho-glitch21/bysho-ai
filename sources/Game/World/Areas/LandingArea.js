@@ -23,13 +23,17 @@ export class LandingArea extends Area
 
     setLetters()
     {
-        const references = this.references.items.get('letters')
+        const references = this.references.items.get('letters') || []
 
+        if(references.length === 0)
+            return
+
+        // Remove the original portfolio owner's landing signature.
+        const positions = []
         for(const reference of references)
         {
             const object = reference.userData.object
 
-            // Remove the original portfolio owner's large 3D name from the landing area.
             if(object)
             {
                 if(object.physical)
@@ -41,7 +45,54 @@ export class LandingArea extends Area
                     this.objects.hideable = this.objects.hideable.filter(_object3D => _object3D !== object.visual.object3D)
                 }
             }
+
+            const position = new THREE.Vector3()
+            reference.getWorldPosition(position)
+            positions.push(position)
         }
+
+        // Recreate the landing signature with BYSHO branding at the same spot.
+        const center = new THREE.Vector3()
+        for(const position of positions)
+            center.add(position)
+        center.multiplyScalar(1 / positions.length)
+
+        const canvas = document.createElement('canvas')
+        canvas.width = 1600
+        canvas.height = 320
+
+        const context = canvas.getContext('2d')
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        context.font = '700 132px "Amatic SC", Arial, sans-serif'
+        context.textAlign = 'center'
+        context.textBaseline = 'middle'
+        context.fillStyle = '#fff4df'
+        context.shadowColor = 'rgba(0, 0, 0, 0.3)'
+        context.shadowBlur = 18
+        context.shadowOffsetY = 8
+        context.fillText('SHOAIB RAHMAN', canvas.width * 0.5, canvas.height * 0.5)
+
+        const texture = new THREE.CanvasTexture(canvas)
+        texture.colorSpace = THREE.SRGBColorSpace
+        texture.minFilter = THREE.LinearFilter
+        texture.magFilter = THREE.LinearFilter
+        texture.generateMipmaps = false
+        texture.needsUpdate = true
+
+        const material = new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            depthWrite: false,
+        })
+
+        const sprite = new THREE.Sprite(material)
+        sprite.position.copy(center)
+        sprite.position.y = Math.max(center.y, 2.6)
+        sprite.scale.set(8.5, 1.7, 1)
+        sprite.userData.byshoSignature = true
+        this.game.scene.add(sprite)
+
+        this.signature = { sprite, texture, canvas }
     }
 
     setKiosk()
