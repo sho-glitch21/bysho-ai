@@ -83,7 +83,7 @@ export class CareerArea extends Area
             line.size = parseFloat(line.group.userData.size)
             line.hasEnd = line.group.userData.hasEnd
             line.color = line.group.userData.color
-            line.texture = this.game.resources[`${line.group.userData.texture}Texture`]
+            line.texture = null
 
             line.stone = line.group.children.find(child => child.name.startsWith('stone'))
             line.stone.position.y = 0
@@ -136,6 +136,40 @@ export class CareerArea extends Area
         for(const line of this.lines.items)
         {
             line.index = i++
+        }
+
+        const story = [
+            [ 'DELL + FREELANCE', 'HYDERABAD  ·  INFORMATION TECHNOLOGY' ],
+            [ 'THE BEGINNING', 'EARLY BUILDS  ·  CURIOSITY' ],
+            [ 'THE COFFEE INCIDENT', 'ONE BAD CUP  ·  ONE VERY LONG RABBIT HOLE' ],
+            [ 'NYU TANDON', 'EMERGING TECHNOLOGIES  ·  NEW YORK' ],
+            [ 'DATA + INTELLIGENCE', 'DATA SCIENCE  ·  MACHINE LEARNING  ·  AI' ],
+            [ 'WHAT COMES NEXT', 'FILMMAKING  ·  ENTREPRENEURSHIP  ·  DESIGN' ],
+        ]
+
+        for(const line of this.lines.items)
+        {
+            const [ title, subtitle ] = story[line.index % story.length]
+            const canvas = document.createElement('canvas')
+            canvas.width = 1024
+            canvas.height = 256
+
+            const context = canvas.getContext('2d')
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.fillStyle = '#ffffff'
+            context.font = '700 64px sans-serif'
+            context.textBaseline = 'middle'
+            context.fillText(title, 48, 92)
+            context.fillStyle = '#b9afc4'
+            context.font = '400 27px sans-serif'
+            context.fillText(subtitle, 50, 170)
+
+            const storyTexture = new THREE.CanvasTexture(canvas)
+            storyTexture.colorSpace = THREE.SRGBColorSpace
+            storyTexture.minFilter = THREE.LinearFilter
+            storyTexture.magFilter = THREE.LinearFilter
+            storyTexture.generateMipmaps = false
+            line.texture = storyTexture
         }
 
         // Debug
