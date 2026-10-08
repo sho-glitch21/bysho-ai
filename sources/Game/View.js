@@ -289,7 +289,7 @@ export class View
         this.zoom.smoothedRatio = this.zoom.baseRatio
         this.zoom.speedAmplitude = - 0.4
         this.zoom.speedEdge = { min: 5, max: 40 }
-        this.zoom.sensitivity = 0.05
+        this.zoom.sensitivity = 0.08
         this.zoom.toggle = 0
         this.zoom.toggleLast = -1
 
@@ -336,7 +336,7 @@ export class View
         this.spherical.theta = Math.PI * 0.25
 
         this.spherical.radius = {}
-        this.spherical.radius.edges = { min: 15, max: 35 }
+        this.spherical.radius.edges = { min: 15, max: 45 }
         this.spherical.radius.current = lerp(this.spherical.radius.edges.min, this.spherical.radius.edges.max, 1 - this.zoom.smoothedRatio)
         this.spherical.radius.nonIdealRatioOffset = 9
 
