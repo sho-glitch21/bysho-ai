@@ -31,8 +31,9 @@ export class LandingArea extends Area
         if(references.length === 0)
             return
 
-        // Keep the original landing lettering's physical objects as our
-        // measurement reference, but replace their visible geometry.
+        // Start from the original landing-letter objects and their colliders.
+        // We keep their footprint/orientation as our reference, but rebuild the
+        // visible lettering as separate physical characters.
         const bounds = new THREE.Box3()
         let sourceMaterial = null
 
@@ -41,25 +42,25 @@ export class LandingArea extends Area
             bounds.expandByObject(reference)
 
             const object = reference.userData.object
-            if(object)
+            if(!object)
+                continue
+
+            if(object.physical)
+                object.physical.body.setEnabled(false)
+
+            if(object.visual)
             {
-                if(object.physical)
-                    object.physical.body.setEnabled(false)
-
-                if(object.visual)
+                if(!sourceMaterial)
                 {
-                    if(!sourceMaterial)
+                    object.visual.object3D.traverse((_child) =>
                     {
-                        object.visual.object3D.traverse((_child) =>
-                        {
-                            if(!sourceMaterial && _child.isMesh && _child.material)
-                                sourceMaterial = Array.isArray(_child.material) ? _child.material[0] : _child.material
-                        })
-                    }
-
-                    object.visual.object3D.removeFromParent()
-                    this.objects.hideable = this.objects.hideable.filter(_object3D => _object3D !== object.visual.object3D)
+                        if(!sourceMaterial && _child.isMesh && _child.material)
+                            sourceMaterial = Array.isArray(_child.material) ? _child.material[0] : _child.material
+                    })
                 }
+
+                object.visual.object3D.removeFromParent()
+                this.objects.hideable = this.objects.hideable.filter(_object3D => _object3D !== object.visual.object3D)
             }
         }
 
@@ -74,112 +75,182 @@ export class LandingArea extends Area
             {
                 const font = new Font(fontData)
 
-                // Main signature — real 3D text, sized to the original landing
-                // sign footprint.
-                const geometry = new TextGeometry('SHOAIB RAHMAN',
+                const makeMaterial = () =>
+                    sourceMaterial?.clone?.() || new THREE.MeshStandardNodeMaterial({
+                        color: 0xf4a6a6,
+                        roughness: 0.7
+                    })
+
+                const createLetterRow = (text, rowCenter, rowWidth, rowHeight, prefix) =>
                 {
-                    font,
-                    size: 1,
-                    depth: 0.22,
-                    curveSegments: 8,
-                    bevelEnabled: true,
-                    bevelThickness: 0.04,
-                    bevelSize: 0.025,
-                    bevelSegments: 2
-                })
+                    const characters = [...text]
+                    const geometries = []
+                    const widths = []
+                    let maxHeight = 0
 
-                geometry.computeBoundingBox()
-                const textSize = geometry.boundingBox.getSize(new THREE.Vector3())
-                geometry.center()
-
-                const material = sourceMaterial?.clone?.() || new THREE.MeshStandardNodeMaterial({
-                    color: 0xf4a6a6,
-                    roughness: 0.7
-                })
-
-                const widthScale = targetSize.x / Math.max(textSize.x, 0.001)
-                const heightScale = targetSize.y / Math.max(textSize.y, 0.001)
-                const scale = Math.min(widthScale, heightScale)
-
-                const mesh = new THREE.Mesh(geometry, material)
-                mesh.scale.setScalar(scale)
-                mesh.position.copy(center)
-                mesh.quaternion.copy(orientation)
-                mesh.userData.byshoSignature = true
-
-                // Give the whole signature its own dynamic rigid body.
-                // This makes the visible text a proper physical object rather
-                // than a floating/decal-like image: the car can hit it,
-                // push it, rotate it and move it.
-                const signatureObject = this.game.objects.add(
+                    for(const character of characters)
                     {
-                        model: mesh,
-                        parent: this.game.scene
-                    },
-                    {
-                        type: 'dynamic',
-                        position: center,
-                        rotation: orientation,
-                        sleeping: true,
-                        linearDamping: 0.25,
-                        angularDamping: 0.3,
-                        colliders: [
-                            {
-                                shape: 'cuboid',
-                                parameters: [
-                                    Math.max(targetSize.x * 0.5, 0.05),
-                                    Math.max(targetSize.y * 0.5, 0.05),
-                                    Math.max(targetSize.z * 0.5 + 0.12, 0.12)
-                                ],
-                                mass: 25,
-                                friction: 0.8,
-                                restitution: 0.05
-                            }
-                        ]
+                        if(character === ' ')
+                        {
+                            geometries.push(null)
+                            widths.push(0)
+                            continue
+                        }
+
+                        const geometry = new TextGeometry(character,
+                        {
+                            font,
+                            size: 1,
+                            depth: 0.22,
+                            curveSegments: 8,
+                            bevelEnabled: true,
+                            bevelThickness: 0.04,
+                            bevelSize: 0.025,
+                            bevelSegments: 2
+                        })
+
+                        geometry.computeBoundingBox()
+                        const size = geometry.boundingBox.getSize(new THREE.Vector3())
+
+                        geometries.push(geometry)
+                        widths.push(size.x)
+                        maxHeight = Math.max(maxHeight, size.y)
                     }
+
+                    const letterGap = maxHeight * 0.07
+                    const spaceWidth = maxHeight * 0.42
+
+                    let totalWidth = 0
+                    for(let i = 0; i < characters.length; i++)
+                    {
+                        const advance = characters[i] === ' ' ? spaceWidth : widths[i]
+                        totalWidth += advance
+                        if(i < characters.length - 1)
+                            totalWidth += letterGap
+                    }
+
+                    const scale = Math.min(
+                        rowWidth / Math.max(totalWidth, 0.001),
+                        rowHeight / Math.max(maxHeight, 0.001)
+                    )
+
+                    let cursor = - totalWidth * 0.5
+
+                    for(let i = 0; i < characters.length; i++)
+                    {
+                        const character = characters[i]
+                        const advance = character === ' ' ? spaceWidth : widths[i]
+
+                        if(character !== ' ')
+                        {
+                            const geometry = geometries[i]
+                            geometry.center()
+
+                            const mesh = new THREE.Mesh(geometry, makeMaterial())
+                            mesh.scale.setScalar(scale)
+                            mesh.quaternion.copy(orientation)
+                            mesh.name = \`\${prefix}-\${i}-\${character}\`
+                            mesh.userData.byshoLetter = prefix
+
+                            const localPosition = new THREE.Vector3(
+                                cursor + advance * 0.5,
+                                0,
+                                0
+                            )
+
+                            const worldPosition = localPosition.applyQuaternion(orientation).add(rowCenter)
+
+                            mesh.position.copy(worldPosition)
+
+                            const depth = 0.22 * scale
+                            const colliderHalfWidth = Math.max(widths[i] * scale * 0.5, 0.04)
+                            const colliderHalfHeight = Math.max(maxHeight * scale * 0.5, 0.08)
+                            const colliderHalfDepth = Math.max(depth * 0.5, 0.05)
+
+                            const letterObject = this.game.objects.add(
+                                {
+                                    model: mesh,
+                                    parent: this.game.scene
+                                },
+                                {
+                                    type: 'dynamic',
+                                    position: worldPosition,
+                                    rotation: orientation,
+                                    sleeping: true,
+                                    linearDamping: 0.25,
+                                    angularDamping: 0.3,
+                                    colliders: [
+                                        {
+                                            shape: 'cuboid',
+                                            parameters: [
+                                                colliderHalfWidth,
+                                                colliderHalfHeight,
+                                                colliderHalfDepth
+                                            ],
+                                            mass: 3,
+                                            friction: 0.8,
+                                            restitution: 0.05
+                                        }
+                                    ]
+                                }
+                            )
+
+                            const collider = letterObject.physical.colliders[0]
+                            collider.setActiveEvents(this.game.RAPIER.ActiveEvents.CONTACT_FORCE_EVENTS)
+                            collider.setContactForceEventThreshold(5)
+
+                            letterObject.physical.onCollision = (force, position) =>
+                            {
+                                this.game.audio.groups.get('hitBrick').playRandomNext(force, position)
+                            }
+
+                            if(prefix === 'signature')
+                                this.signature = this.signature || { letters: [] }
+
+                            if(prefix === 'signature')
+                                this.signature.letters.push(letterObject)
+                            else
+                                this.sulSignature = this.sulSignature || { letters: [] }
+
+                            if(prefix !== 'signature')
+                                this.sulSignature.letters.push(letterObject)
+                        }
+
+                        cursor += advance
+                        if(i < characters.length - 1)
+                            cursor += letterGap
+                    }
+                }
+
+                // Main signature: individual movable letters, just like the
+                // original landing implementation — but spelling SHOAIB RAHMAN.
+                this.signature = { letters: [] }
+                createLetterRow(
+                    'SHOAIB RAHMAN',
+                    center,
+                    targetSize.x,
+                    targetSize.y,
+                    'signature'
                 )
 
-                this.signature = { object: signatureObject, mesh, geometry, material }
-
-                // SUL — intentionally close to the signature, like someone
-                // placed it there on purpose. Smaller, quieter, still real 3D.
-                const sulGeometry = new TextGeometry('SUL',
-                {
-                    font,
-                    size: 1,
-                    depth: 0.22,
-                    curveSegments: 8,
-                    bevelEnabled: true,
-                    bevelThickness: 0.04,
-                    bevelSize: 0.025,
-                    bevelSegments: 2
-                })
-
-                sulGeometry.center()
-
-                const sulMaterial = material?.clone?.() || new THREE.MeshStandardNodeMaterial({
-                    color: 0xf4a6a6,
-                    roughness: 0.7
-                })
-
-                const sulMesh = new THREE.Mesh(sulGeometry, sulMaterial)
-                sulMesh.scale.setScalar(scale * 0.36)
-
-                // Place it just off the lower-right of SHOAIB RAHMAN.
-                // The offset is expressed in the signature's local orientation.
-                const sulOffset = new THREE.Vector3(
-                    targetSize.x * 0.47,
-                    -targetSize.y * 0.38,
-                    0.16
+                // SUL is intentionally placed extremely close to the main sign.
+                // Same letter height / visual scale, as requested.
+                const sulCenter = center.clone()
+                const sulLocalOffset = new THREE.Vector3(
+                    targetSize.x * 0.34,
+                    -targetSize.y * 0.86,
+                    targetSize.z * 0.25 + 0.18
                 )
-                sulOffset.applyQuaternion(orientation)
+                sulCenter.add(sulLocalOffset.applyQuaternion(orientation))
 
-                sulMesh.position.copy(center).add(sulOffset)
-                sulMesh.quaternion.copy(orientation)
-                sulMesh.userData.byshoSUL = true
-
-                this.game.scene.add(sulMesh)
-                this.sulSignature = { mesh: sulMesh, geometry: sulGeometry, material: sulMaterial }
+                this.sulSignature = { letters: [] }
+                createLetterRow(
+                    'SUL',
+                    sulCenter,
+                    targetSize.x * 0.24,
+                    targetSize.y,
+                    'sul'
+                )
             },
             undefined,
             (error) =>
