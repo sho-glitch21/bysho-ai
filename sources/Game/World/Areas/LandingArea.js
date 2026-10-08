@@ -149,7 +149,7 @@ export class LandingArea extends Area
                             const mesh = new THREE.Mesh(geometry, makeMaterial())
                             mesh.scale.setScalar(scale)
                             mesh.quaternion.copy(orientation)
-                            mesh.name = \`\${prefix}-\${i}-\${character}\`
+                            mesh.name = prefix + '-' + i + '-' + character
                             mesh.userData.byshoLetter = prefix
 
                             const localPosition = new THREE.Vector3(
