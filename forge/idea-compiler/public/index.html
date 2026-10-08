@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORGE // IDEA COMPILER</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <span class="eyebrow">BYSHO / THE FORGE / 001</span>
+      <h1>IDEAS ENTER.<br><em>SOMETHING REAL</em> COMES OUT.</h1>
+      <p class="intro">Give the Forge a rough idea. It will try to find the problem hiding inside it and design the smallest useful thing to build next.</p>
+    </header>
+
+    <section class="compiler">
+      <label for="idea">RAW IDEA</label>
+      <textarea id="idea" placeholder="I want to build..."></textarea>
+      <button id="compile">COMPILE IDEA <span>→</span></button>
+      <p id="status" class="status">FORGE READY.</p>
+    </section>
+
+    <section id="result" class="result hidden">
+      <div class="result-head">
+        <span>FORGE RESULT</span>
+        <strong id="verdict"></strong>
+      </div>
+      <div class="grid">
+        <article><small>PROBLEM</small><p id="problem"></p></article>
+        <article><small>USEFUL DATA</small><ul id="data"></ul></article>
+        <article><small>QUESTIONS</small><ul id="questions"></ul></article>
+        <article class="wide"><small>SMALLEST EXPERIMENT</small><p id="mvp"></p></article>
+        <article class="wide"><small>NEXT BUILD</small><ol id="nextBuild"></ol></article>
+      </div>
+      <blockquote id="reason"></blockquote>
+    </section>
+
+    <footer>
+      <span>FORGE // v0.1</span>
+      <span>AN INCOMPLETE EXPERIMENT BY SHOAIB RAHMAN</span>
+    </footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
