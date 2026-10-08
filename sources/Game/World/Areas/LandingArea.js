@@ -46,7 +46,12 @@ export class LandingArea extends Area
                 continue
 
             if(object.physical)
+            {
                 object.physical.body.setEnabled(false)
+                // These are source objects only. Mark them non-resettable so
+                // Game.reset() cannot bring the original Bruno visuals back.
+                object.physical.type = 'fixed'
+            }
 
             if(object.visual)
             {
@@ -233,15 +238,37 @@ export class LandingArea extends Area
                     'signature'
                 )
 
-                // SUL is intentionally placed extremely close to the main sign.
-                // Same letter height / visual scale, as requested.
-                const sulCenter = center.clone()
-                const sulLocalOffset = new THREE.Vector3(
-                    targetSize.x * 0.63,
-                    0,
-                    0.32
-                )
-                sulCenter.add(sulLocalOffset.applyQuaternion(orientation))
+                // SUL belongs by the river bridge: a deliberate little
+                // landmark, not part of the main signature.
+                let bridgeAnchor = null
+                this.model.traverse((_child) =>
+                {
+                    if(bridgeAnchor)
+                        return
+
+                    const name = (_child.name || '').toLowerCase()
+                    if(name.includes('bridge'))
+                        bridgeAnchor = _child
+                })
+
+                const sulCenter = new THREE.Vector3()
+
+                if(bridgeAnchor)
+                {
+                    const bridgeBounds = new THREE.Box3().setFromObject(bridgeAnchor)
+                    bridgeBounds.getCenter(sulCenter)
+                    sulCenter.y += targetSize.y * 0.62
+                }
+                else
+                {
+                    // Safe fallback if the asset changes and no bridge node exists.
+                    const sulLocalOffset = new THREE.Vector3(
+                        targetSize.x * 0.63,
+                        0,
+                        0.32
+                    )
+                    sulCenter.copy(center).add(sulLocalOffset.applyQuaternion(orientation))
+                }
 
                 this.sulSignature = { letters: [] }
                 createLetterRow(
