@@ -55,6 +55,17 @@ try
     window.__BYSHO_BOOT_STAGE__ = 'game.construct'
     window.game = new Game()
     window.__BYSHO_GAME_STARTED__ = true
+
+    window.setTimeout(() =>
+    {
+        if(window.__BYSHO_BOOT_STAGE__ !== 'ready')
+        {
+            showBootError(
+                new Error('BYSHO engine stalled during startup.'),
+                'BYSHO BOOT TIMEOUT'
+            )
+        }
+    }, 30000)
 }
 catch(error)
 {
