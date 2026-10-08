@@ -40,8 +40,11 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout --orphan gh-pages
           git rm -rf . || true
+          # Remove ignored and untracked files left behind by the source checkout.
+          # Only the saved production build should enter the public deployment branch.
+          git clean -fdx
           cp -r /tmp/bysho-dist/. .
-          printf '%s\n' 'bysho.ai' > CNAME
+          printf '%s\\n' 'bysho.ai' > CNAME
           # Keep aliases for entry bundles that may still be referenced by cached Porkbun HTML.
           ENTRY=$(find assets -maxdepth 1 -type f -name 'index-*.js' | head -n 1)
           if [ -n "$ENTRY" ]; then
