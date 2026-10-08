@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 const root = fileURLToPath(new URL('.', import.meta.url))
 const publicDir = join(root, 'public')
 const port = Number(process.env.PORT || 8787)
-const model = process.env.OPENAI_MODEL || 'gpt-5-mini'
+const model = process.env.OPENAI_MODEL || 'gpt-6-luna'
 
 const systemPrompt = `You are FORGE, an experimental idea-to-execution engine created by Shoaib Rahman.
 
