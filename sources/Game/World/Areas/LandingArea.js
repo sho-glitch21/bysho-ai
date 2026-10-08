@@ -109,6 +109,46 @@ export class LandingArea extends Area
                 this.game.scene.add(mesh)
 
                 this.signature = { mesh, geometry, material }
+
+                // A smaller, quieter SUL marker lives close to the landing signature.
+                // Same Pally type, same 3D treatment — discovered rather than announced.
+                const sulGeometry = new TextGeometry('SUL',
+                {
+                    font,
+                    size: 1,
+                    depth: 0.22,
+                    curveSegments: 8,
+                    bevelEnabled: true,
+                    bevelThickness: 0.04,
+                    bevelSize: 0.025,
+                    bevelSegments: 2
+                })
+
+                sulGeometry.computeBoundingBox()
+                const sulTextSize = sulGeometry.boundingBox.getSize(new THREE.Vector3())
+                sulGeometry.center()
+
+                const sulMaterial = material?.clone?.() || new THREE.MeshStandardNodeMaterial({
+                    color: 0xf4a6a6,
+                    roughness: 0.7
+                })
+
+                const sulMesh = new THREE.Mesh(sulGeometry, sulMaterial)
+                sulMesh.scale.setScalar(scale * 0.32)
+
+                const sulOffset = new THREE.Vector3(
+                    targetSize.x * 0.42,
+                    -targetSize.y * 0.72,
+                    0.06
+                )
+                sulOffset.applyQuaternion(orientation)
+
+                sulMesh.position.copy(center).add(sulOffset)
+                sulMesh.quaternion.copy(orientation)
+                sulMesh.userData.byshoSUL = true
+
+                this.game.scene.add(sulMesh)
+                this.sulSignature = { mesh: sulMesh, geometry: sulGeometry, material: sulMaterial }
             },
             undefined,
             (error) =>
