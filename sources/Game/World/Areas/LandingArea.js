@@ -247,7 +247,7 @@ export class LandingArea extends Area
                 createLetterRow(
                     'SUL',
                     sulCenter,
-                    targetSize.x * 0.24,
+                    targetSize.x * 0.5,
                     targetSize.y,
                     'sul'
                 )
