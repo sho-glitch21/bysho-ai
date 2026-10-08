@@ -31,8 +31,8 @@ export class LandingArea extends Area
         if(references.length === 0)
             return
 
-        // Measure the original landing-sign geometry so the BYSHO replacement
-        // occupies the same visual footprint and orientation.
+        // Keep the original landing lettering's physical objects as our
+        // measurement reference, but replace their visible geometry.
         const bounds = new THREE.Box3()
         let sourceMaterial = null
 
@@ -74,6 +74,8 @@ export class LandingArea extends Area
             {
                 const font = new Font(fontData)
 
+                // Main signature — real 3D text, sized to the original landing
+                // sign footprint.
                 const geometry = new TextGeometry('SHOAIB RAHMAN',
                 {
                     font,
@@ -95,23 +97,52 @@ export class LandingArea extends Area
                     roughness: 0.7
                 })
 
-                const mesh = new THREE.Mesh(geometry, material)
-
                 const widthScale = targetSize.x / Math.max(textSize.x, 0.001)
                 const heightScale = targetSize.y / Math.max(textSize.y, 0.001)
                 const scale = Math.min(widthScale, heightScale)
 
+                const mesh = new THREE.Mesh(geometry, material)
                 mesh.scale.setScalar(scale)
                 mesh.position.copy(center)
                 mesh.quaternion.copy(orientation)
                 mesh.userData.byshoSignature = true
 
-                this.game.scene.add(mesh)
+                // Give the whole signature its own dynamic rigid body.
+                // This makes the visible text a proper physical object rather
+                // than a floating/decal-like image: the car can hit it,
+                // push it, rotate it and move it.
+                const signatureObject = this.game.objects.add(
+                    {
+                        model: mesh,
+                        parent: this.game.scene
+                    },
+                    {
+                        type: 'dynamic',
+                        position: center,
+                        rotation: orientation,
+                        sleeping: true,
+                        linearDamping: 0.25,
+                        angularDamping: 0.3,
+                        colliders: [
+                            {
+                                shape: 'cuboid',
+                                parameters: [
+                                    Math.max(targetSize.x * 0.5, 0.05),
+                                    Math.max(targetSize.y * 0.5, 0.05),
+                                    Math.max(targetSize.z * 0.5 + 0.12, 0.12)
+                                ],
+                                mass: 25,
+                                friction: 0.8,
+                                restitution: 0.05
+                            }
+                        ]
+                    }
+                )
 
-                this.signature = { mesh, geometry, material }
+                this.signature = { object: signatureObject, mesh, geometry, material }
 
-                // A smaller, quieter SUL marker lives close to the landing signature.
-                // Same Pally type, same 3D treatment — discovered rather than announced.
+                // SUL — intentionally close to the signature, like someone
+                // placed it there on purpose. Smaller, quieter, still real 3D.
                 const sulGeometry = new TextGeometry('SUL',
                 {
                     font,
@@ -124,8 +155,6 @@ export class LandingArea extends Area
                     bevelSegments: 2
                 })
 
-                sulGeometry.computeBoundingBox()
-                const sulTextSize = sulGeometry.boundingBox.getSize(new THREE.Vector3())
                 sulGeometry.center()
 
                 const sulMaterial = material?.clone?.() || new THREE.MeshStandardNodeMaterial({
@@ -134,12 +163,14 @@ export class LandingArea extends Area
                 })
 
                 const sulMesh = new THREE.Mesh(sulGeometry, sulMaterial)
-                sulMesh.scale.setScalar(scale * 0.32)
+                sulMesh.scale.setScalar(scale * 0.36)
 
+                // Place it just off the lower-right of SHOAIB RAHMAN.
+                // The offset is expressed in the signature's local orientation.
                 const sulOffset = new THREE.Vector3(
-                    targetSize.x * 0.42,
-                    -targetSize.y * 0.72,
-                    0.06
+                    targetSize.x * 0.47,
+                    -targetSize.y * 0.38,
+                    0.16
                 )
                 sulOffset.applyQuaternion(orientation)
 
