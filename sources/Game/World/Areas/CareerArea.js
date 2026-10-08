@@ -141,7 +141,7 @@ export class CareerArea extends Area
         const story = [
             [ 'THE BEGINNING', 'EARLY BUILDS  ·  CURIOSITY' ],
             [ 'DELL', 'INFORMATION TECHNOLOGY  ·  HYDERABAD' ],
-            [ 'CSA', 'THE NEXT CHAPTER' ],
+            [ 'CRA', 'THE NEXT CHAPTER' ],
             [ 'GOOGLE', 'THE NEXT CHAPTER' ],
             [ 'SALESFORCE', 'THE NEXT CHAPTER' ],
             [ 'NYU TANDON', 'EMERGING TECHNOLOGIES  ·  NEW YORK' ],
