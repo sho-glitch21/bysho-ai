@@ -468,40 +468,49 @@ export class ProjectsArea extends Area
         // Get resource and load
         this.images.getResourceAndLoad = (key) =>
         {
-            const path = `projects/images/${key}`
-            
-            // Try to retrieve resource
             let resource = this.images.resources.get(key)
 
-            // Resource not found => Create
             if(!resource)
             {
                 resource = {}
-                resource.loaded = false
+                resource.loaded = true
 
-                const loader = this.game.resourcesLoader.getLoader('textureKtx')
+                const project = projectsData.find(item => item.images.includes(key))
+                const canvas = document.createElement('canvas')
+                canvas.width = 960
+                canvas.height = 540
 
-                loader.load(
-                    path,
-                    (loadedTexture) =>
-                    {
-                        resource.texture = loadedTexture
-                        resource.colorSpace = THREE.SRGBColorSpace
-                        resource.flipY = false
-                        resource.magFilter = THREE.LinearFilter
-                        resource.minFilter = THREE.LinearFilter
-                        resource.generateMipmaps = false
+                const context = canvas.getContext('2d')
+                context.fillStyle = '#18141f'
+                context.fillRect(0, 0, canvas.width, canvas.height)
 
-                        resource.loaded = true
-                        
-                        this.images.loadEnded(key)
-                    }
-                )
+                context.strokeStyle = '#5f536d'
+                context.lineWidth = 4
+                context.strokeRect(24, 24, canvas.width - 48, canvas.height - 48)
 
-                // Save
+                context.fillStyle = '#ffffff'
+                context.font = '700 58px sans-serif'
+                context.textBaseline = 'middle'
+                context.fillText(project?.title || 'BYSHO', 56, 205)
+
+                context.fillStyle = '#b9afc4'
+                context.font = '400 27px sans-serif'
+                const role = project?.attributes?.role?.join('  ·  ') || 'curiosity'
+                context.fillText(role.toUpperCase(), 58, 270)
+
+                context.fillStyle = '#7f738d'
+                context.font = '400 20px sans-serif'
+                context.fillText('BYSHO  /  STILL BUILDING', 58, 450)
+
+                resource.texture = new THREE.CanvasTexture(canvas)
+                resource.texture.colorSpace = THREE.SRGBColorSpace
+                resource.texture.magFilter = THREE.LinearFilter
+                resource.texture.minFilter = THREE.LinearFilter
+                resource.texture.generateMipmaps = false
+                resource.loaded = true
+
                 this.images.resources.set(key, resource)
             }
-
 
             return resource
         }
