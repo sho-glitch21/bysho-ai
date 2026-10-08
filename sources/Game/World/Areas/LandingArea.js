@@ -72,7 +72,7 @@ export class LandingArea extends Area
             './fonts/Pally-Medium.ttf',
             (fontData) =>
             {
-                const font = new THREE.Font(fontData)
+                const font = new Font(fontData)
 
                 const geometry = new TextGeometry('SHOAIB RAHMAN',
                 {
