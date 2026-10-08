@@ -1,3 +1,4 @@
+import * as THREE from 'three/webgpu'
 import { color, float, Fn, max, PI, positionWorld, texture, uniform, uv, vec3 } from 'three/tsl'
 import { Game } from '../Game.js'
 import { References } from '../References.js'
@@ -34,6 +35,8 @@ export class Scenery
             this.references.parse(child)
         }
 
+        this.setSulBridgeDoor(model)
+
         this.setRoad()
 
         this.game.ticker.events.on('tick', () =>
@@ -42,6 +45,59 @@ export class Scenery
         })
     }
     
+    setSulBridgeDoor(model)
+    {
+        const findByName = (object, pattern) =>
+        {
+            if(pattern.test(object.name || ''))
+                return object
+
+            for(const child of object.children || [])
+            {
+                const found = findByName(child, pattern)
+                if(found)
+                    return found
+            }
+
+            return null
+        }
+
+        const sul = model.map((object) => findByName(object, /sul/i)).find(Boolean)
+        const bridge = model.map((object) => findByName(object, /bridge/i)).find(Boolean)
+
+        if(!sul || !bridge)
+            return
+
+        const bridgeBounds = new THREE.Box3().setFromObject(bridge)
+        const bridgeSize = bridgeBounds.getSize(new THREE.Vector3())
+        const bridgeCenter = bridgeBounds.getCenter(new THREE.Vector3())
+        const sulPosition = sul.position.clone()
+
+        // Put SUL at the bridge exit closest to its current location.
+        // This turns it into a deliberate gate/block on the driving path.
+        const alongX = bridgeSize.x >= bridgeSize.z
+        const endpointA = bridgeCenter.clone()
+        const endpointB = bridgeCenter.clone()
+
+        if(alongX)
+        {
+            endpointA.x = bridgeBounds.min.x
+            endpointB.x = bridgeBounds.max.x
+        }
+        else
+        {
+            endpointA.z = bridgeBounds.min.z
+            endpointB.z = bridgeBounds.max.z
+        }
+
+        const endpoint = sulPosition.distanceTo(endpointA) <= sulPosition.distanceTo(endpointB) ? endpointA : endpointB
+        sul.position.x = endpoint.x
+        sul.position.z = endpoint.z
+
+        if(this.game.debug.active)
+            console.log('[BYSHO] SUL bridge door positioned at', endpoint)
+    }
+
     setRoad()
     {
         this.road = {}
