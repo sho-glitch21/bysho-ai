@@ -71,7 +71,7 @@ export class Scenery
         const bridgeBounds = new THREE.Box3().setFromObject(bridge)
         const bridgeSize = bridgeBounds.getSize(new THREE.Vector3())
         const bridgeCenter = bridgeBounds.getCenter(new THREE.Vector3())
-        const sulPosition = sul.position.clone()
+        const sulPosition = sul.getWorldPosition(new THREE.Vector3())
 
         // Put SUL at the bridge exit closest to its current location.
         // This turns it into a deliberate gate/block on the driving path.
@@ -91,8 +91,9 @@ export class Scenery
         }
 
         const endpoint = sulPosition.distanceTo(endpointA) <= sulPosition.distanceTo(endpointB) ? endpointA : endpointB
-        sul.position.x = endpoint.x
-        sul.position.z = endpoint.z
+        const localEndpoint = sul.parent ? sul.parent.worldToLocal(endpoint.clone()) : endpoint
+        sul.position.x = localEndpoint.x
+        sul.position.z = localEndpoint.z
 
         if(this.game.debug.active)
             console.log('[BYSHO] SUL bridge door positioned at', endpoint)
