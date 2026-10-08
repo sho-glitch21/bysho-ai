@@ -139,11 +139,14 @@ export class CareerArea extends Area
         }
 
         const story = [
-            [ 'DELL + FREELANCE', 'HYDERABAD  ·  INFORMATION TECHNOLOGY' ],
             [ 'THE BEGINNING', 'EARLY BUILDS  ·  CURIOSITY' ],
-            [ 'THE COFFEE INCIDENT', 'ONE BAD CUP  ·  ONE VERY LONG RABBIT HOLE' ],
+            [ 'DELL', 'INFORMATION TECHNOLOGY  ·  HYDERABAD' ],
+            [ 'CSA', 'THE NEXT CHAPTER' ],
+            [ 'GOOGLE', 'THE NEXT CHAPTER' ],
+            [ 'SALESFORCE', 'THE NEXT CHAPTER' ],
             [ 'NYU TANDON', 'EMERGING TECHNOLOGIES  ·  NEW YORK' ],
             [ 'DATA + INTELLIGENCE', 'DATA SCIENCE  ·  MACHINE LEARNING  ·  AI' ],
+            [ 'THE COFFEE INCIDENT', 'ONE BAD CUP  ·  ONE VERY LONG RABBIT HOLE' ],
             [ 'WHAT COMES NEXT', 'FILMMAKING  ·  ENTREPRENEURSHIP  ·  DESIGN' ],
         ]
 
@@ -166,6 +169,7 @@ export class CareerArea extends Area
 
             const storyTexture = new THREE.CanvasTexture(canvas)
             storyTexture.colorSpace = THREE.SRGBColorSpace
+            storyTexture.flipY = false
             storyTexture.minFilter = THREE.LinearFilter
             storyTexture.magFilter = THREE.LinearFilter
             storyTexture.generateMipmaps = false
