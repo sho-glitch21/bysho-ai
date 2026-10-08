@@ -48,9 +48,10 @@ export class LandingArea extends Area
             if(object.physical)
             {
                 object.physical.body.setEnabled(false)
-                // These are source objects only. Mark them non-resettable so
-                // Game.reset() cannot bring the original Bruno visuals back.
-                object.physical.type = 'fixed'
+                // These source bodies are no longer part of the active object
+                // system. Remove the physical handle so Game.reset() cannot
+                // resurrect the original Bruno letters.
+                object.physical = null
             }
 
             if(object.visual)
@@ -239,9 +240,12 @@ export class LandingArea extends Area
                 )
 
                 // SUL belongs by the river bridge: a deliberate little
-                // landmark, not part of the main signature.
+                // landmark, not part of the main signature. The bridge lives
+                // in the shared scenery asset, not the landing-area model.
                 let bridgeAnchor = null
-                this.model.traverse((_child) =>
+                const sceneryModel = this.game.resources.sceneryModel?.scene
+
+                sceneryModel?.traverse((_child) =>
                 {
                     if(bridgeAnchor)
                         return
@@ -261,11 +265,13 @@ export class LandingArea extends Area
                 }
                 else
                 {
-                    // Safe fallback if the asset changes and no bridge node exists.
+                    // If the bridge node is renamed in the asset, keep SUL
+                    // near the bridge-side edge of the landing area rather
+                    // than placing it beside SHOAIB again.
                     const sulLocalOffset = new THREE.Vector3(
-                        targetSize.x * 0.63,
-                        0,
-                        0.32
+                        -targetSize.x * 0.95,
+                        targetSize.y * 0.12,
+                        -targetSize.x * 0.75
                     )
                     sulCenter.copy(center).add(sulLocalOffset.applyQuaternion(orientation))
                 }
