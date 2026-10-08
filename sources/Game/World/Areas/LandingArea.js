@@ -237,9 +237,9 @@ export class LandingArea extends Area
                 // Same letter height / visual scale, as requested.
                 const sulCenter = center.clone()
                 const sulLocalOffset = new THREE.Vector3(
-                    targetSize.x * 0.34,
-                    -targetSize.y * 0.86,
-                    targetSize.z * 0.25 + 0.18
+                    targetSize.x * 0.63,
+                    0,
+                    0.32
                 )
                 sulCenter.add(sulLocalOffset.applyQuaternion(orientation))
 
