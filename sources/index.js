@@ -7,6 +7,9 @@ if(import.meta.env.VITE_LOG)
         ...consoleLog
     )
 
+window.__BYSHO_BOOT_STAGE__ = 'script.loaded'
+window.__BYSHO_GAME_STARTED__ = false
+
 const showBootError = (error, label = 'BYSHO BOOT ERROR') =>
 {
     console.error('BYSHO boot error:', error)
@@ -47,7 +50,13 @@ window.addEventListener('unhandledrejection', event =>
     showBootError(reason, 'BYSHO UNHANDLED REJECTION')
 })
 
-if(import.meta.env.VITE_GAME_PUBLIC)
+try
+{
+    window.__BYSHO_BOOT_STAGE__ = 'game.construct'
     window.game = new Game()
-else
-    new Game()
+    window.__BYSHO_GAME_STARTED__ = true
+}
+catch(error)
+{
+    showBootError(error)
+}
