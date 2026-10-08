@@ -42,8 +42,8 @@ export default [
         imageMini: 'woodkid-volcano-robot-mini.ktx'
     },
     {
-        title: 'Bounce Friday',
-        url: 'https://threejs-journey.com/apps/bounce-friday/',
+        title: 'The Forge — experiments',
+        url: 'https://bysho.ai',
         image: 'bounce-friday.ktx',
         imageMini: 'bounce-friday-mini.ktx'
     },
