@@ -15,7 +15,7 @@ export class BehindTheSceneArea extends Area
         if(this.game.debug.active)
         {
             this.debugPanel = this.game.debug.panel.addFolder({
-                title: '🔳 Behind the scene',
+                title: '🛠 The Forge',
                 expanded: false,
             })
         }
