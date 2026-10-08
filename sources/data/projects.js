@@ -5,7 +5,7 @@ export default [
         url: 'https://bysho.ai',
         attributes: { role: [ 'creative headquarters', 'builder' ], with: 'BYSHO' },
         distinctions: [ ],
-        images: [ 'threejs-journey-1.ktx', 'threejs-journey-2.ktx', 'threejs-journey-3.ktx' ]
+        images: [ 'forge-1', 'forge-2', 'forge-3' ]
     },
     {
         title: 'The Beginning',
@@ -13,7 +13,7 @@ export default [
         url: 'https://bysho.ai',
         attributes: { role: [ 'curiosity', 'early builds' ], with: 'Shoaib Rahman' },
         distinctions: [ ],
-        images: [ 'bonhomme-10-ans-1.ktx', 'bonhomme-10-ans-2.ktx', 'bonhomme-10-ans-3.ktx' ]
+        images: [ 'beginning-1', 'beginning-2', 'beginning-3' ]
     },
     {
         title: 'Data & Intelligence',
@@ -21,7 +21,7 @@ export default [
         url: 'https://bysho.ai',
         attributes: { role: [ 'data science', 'AI' ], with: 'BYSHO' },
         distinctions: [ ],
-        images: [ 'luni-1.ktx', 'luni-2.ktx', 'luni-3.ktx' ]
+        images: [ 'data-1', 'data-2', 'data-3' ]
     },
     {
         title: 'Still Building',
@@ -29,7 +29,7 @@ export default [
         url: 'https://bysho.ai',
         attributes: { role: [ 'experiments', 'R&D' ], with: 'BYSHO' },
         distinctions: [ ],
-        images: [ 'madbox-1.ktx', 'madbox-2.ktx', 'madbox-3.ktx' ]
+        images: [ 'building-1', 'building-2', 'building-3' ]
     },
     {
         title: 'What Comes Next',
@@ -37,6 +37,6 @@ export default [
         url: 'https://bysho.ai',
         attributes: { role: [ 'filmmaking', 'entrepreneurship', 'design' ], with: 'BYSHO' },
         distinctions: [ ],
-        images: [ 'scout-1.ktx', 'scout-2.ktx', 'scout-3.ktx' ]
+        images: [ 'future-1', 'future-2', 'future-3' ]
     }
 ]
