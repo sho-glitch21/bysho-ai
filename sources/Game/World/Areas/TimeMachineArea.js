@@ -51,7 +51,7 @@ export class TimeMachineArea extends Area
     {
         this.events.on('boundingIn', () =>
         {
-            this.game.achievements.setProgress('areas', 'archive')
+            this.game.achievements.setProgress('areas', 'timeMachine')
         })
     }
 }
