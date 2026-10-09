@@ -63,22 +63,21 @@ export class Scenery
         }
 
         const sul = model.map((object) => findByName(object, /sul/i)).find(Boolean)
-        const bridge = model.map((object) => findByName(object, /bridge/i)).find(Boolean)
-
-        if(!sul || !bridge)
+        if(!sul)
             return
 
-        const bridgeBounds = new THREE.Box3().setFromObject(bridge)
-        const bridgeCenter = bridgeBounds.getCenter(new THREE.Vector3())
+        // Place SUL at the default car spawn shown in the landing scene.
+        // Keep the existing individual letter objects and collision behaviour intact.
+        const spawn = this.game.respawns.getDefault()
+        if(!spawn)
+            return
 
-        // Place SUL on the bridge's drivable area, not at an arbitrary bridge endpoint.
-        // Keep the existing individual letter objects and their collision behaviour intact.
-        const localTarget = sul.parent ? sul.parent.worldToLocal(bridgeCenter.clone()) : bridgeCenter
+        const localTarget = sul.parent ? sul.parent.worldToLocal(spawn.position.clone()) : spawn.position.clone()
         sul.position.x = localTarget.x
         sul.position.z = localTarget.z
 
         if(this.game.debug.active)
-            console.log('[BYSHO] SUL positioned on bridge driving path at', bridgeCenter)
+            console.log('[BYSHO] SUL positioned at default car spawn:', spawn.position)
     }
 
     setRoad()
