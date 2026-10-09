@@ -69,34 +69,16 @@ export class Scenery
             return
 
         const bridgeBounds = new THREE.Box3().setFromObject(bridge)
-        const bridgeSize = bridgeBounds.getSize(new THREE.Vector3())
         const bridgeCenter = bridgeBounds.getCenter(new THREE.Vector3())
-        const sulPosition = sul.getWorldPosition(new THREE.Vector3())
 
-        // Put SUL at the bridge exit closest to its current location.
-        // This turns it into a deliberate gate/block on the driving path.
-        const alongX = bridgeSize.x >= bridgeSize.z
-        const endpointA = bridgeCenter.clone()
-        const endpointB = bridgeCenter.clone()
-
-        if(alongX)
-        {
-            endpointA.x = bridgeBounds.min.x
-            endpointB.x = bridgeBounds.max.x
-        }
-        else
-        {
-            endpointA.z = bridgeBounds.min.z
-            endpointB.z = bridgeBounds.max.z
-        }
-
-        const endpoint = sulPosition.distanceTo(endpointA) <= sulPosition.distanceTo(endpointB) ? endpointA : endpointB
-        const localEndpoint = sul.parent ? sul.parent.worldToLocal(endpoint.clone()) : endpoint
-        sul.position.x = localEndpoint.x
-        sul.position.z = localEndpoint.z
+        // Place SUL on the bridge's drivable area, not at an arbitrary bridge endpoint.
+        // Keep the existing individual letter objects and their collision behaviour intact.
+        const localTarget = sul.parent ? sul.parent.worldToLocal(bridgeCenter.clone()) : bridgeCenter
+        sul.position.x = localTarget.x
+        sul.position.z = localTarget.z
 
         if(this.game.debug.active)
-            console.log('[BYSHO] SUL bridge door positioned at', endpoint)
+            console.log('[BYSHO] SUL positioned on bridge driving path at', bridgeCenter)
     }
 
     setRoad()
