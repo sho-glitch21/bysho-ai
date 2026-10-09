@@ -12,6 +12,9 @@ export class Scenery
 
         this.references = new References()
         const model = [...this.game.resources.sceneryModel.scene.children]
+
+        // Set SUL before objects are added so their visual and physics transforms start together.
+        this.setSulBridgeDoor(model)
         for(const child of model)
         {
             // Add
@@ -34,8 +37,6 @@ export class Scenery
 
             this.references.parse(child)
         }
-
-        this.setSulBridgeDoor(model)
 
         this.setRoad()
 
