@@ -48,37 +48,52 @@ export class Scenery
     
     setSulBridgeDoor(model)
     {
-        const findByName = (object, pattern) =>
+        // SUL is part of the scenery GLB, but its exported Blender nodes are
+        // named Cube.* rather than "SUL". These are the 13 separate letter
+        // pieces at the original river-side position.
+        const sulNodeNames = new Set([
+            'Cube.001',
+            'Cube.049',
+            'Cube.059',
+            'Cube.064',
+            'Cube.066',
+            'Cube.067',
+            'Cube.071',
+            'Cube.072',
+            'Cube.074',
+            'Cube.075',
+            'Cube.076',
+            'Cube.078',
+            'Cube.079'
+        ])
+
+        const sulPieces = model.filter((object) => sulNodeNames.has(object.name))
+        if(sulPieces.length !== sulNodeNames.size)
         {
-            if(pattern.test(object.name || ''))
-                return object
-
-            for(const child of object.children || [])
-            {
-                const found = findByName(child, pattern)
-                if(found)
-                    return found
-            }
-
-            return null
+            console.warn('[BYSHO] SUL placement skipped: expected 13 named scenery pieces, found', sulPieces.length)
+            return
         }
 
-        const sul = model.map((object) => findByName(object, /sul/i)).find(Boolean)
-        if(!sul)
-            return
-
-        // Place SUL at the default car spawn shown in the landing scene.
-        // Keep the existing individual letter objects and collision behaviour intact.
+        // Keep each piece's Y coordinate and its independent object/collision setup.
+        // Only move the existing letter pieces horizontally to the landing car spawn.
         const spawn = this.game.respawns.getDefault()
         if(!spawn)
+        {
+            console.warn('[BYSHO] SUL placement skipped: default car spawn is unavailable')
             return
+        }
 
-        const localTarget = sul.parent ? sul.parent.worldToLocal(spawn.position.clone()) : spawn.position.clone()
-        sul.position.x = localTarget.x
-        sul.position.z = localTarget.z
+        for(const piece of sulPieces)
+        {
+            piece.position.x = spawn.position.x
+            piece.position.z = spawn.position.z
+        }
 
-        if(this.game.debug.active)
-            console.log('[BYSHO] SUL positioned at default car spawn:', spawn.position)
+        console.info('[BYSHO] Positioned all 13 SUL scenery pieces at car spawn', {
+            x: spawn.position.x,
+            z: spawn.position.z,
+            pieces: sulPieces.map((piece) => piece.name)
+        })
     }
 
     setRoad()
