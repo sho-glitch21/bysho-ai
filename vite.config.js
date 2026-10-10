@@ -4,6 +4,10 @@ import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const sourceRoot = fileURLToPath(new URL('./sources/', import.meta.url))
 
 export default {
     root: 'sources/', // Sources files (typically where index.html is)
@@ -20,7 +24,15 @@ export default {
     {
         outDir: '../dist', // Output in the dist/ folder
         emptyOutDir: true, // Empty the folder first
-        sourcemap: false // Add sourcemap
+        sourcemap: false, // Add sourcemaps only when explicitly needed
+        rollupOptions:
+        {
+            input:
+            {
+                main: resolve(sourceRoot, 'index.html'),
+                theSignature: resolve(sourceRoot, 'the-signature/index.html')
+            }
+        }
     },
     plugins:
     [
