@@ -2,54 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#101012">
-    <meta name="description" content="The Signature — a dedicated BYSHO experience.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#030304">
+    <meta name="description" content="The Signature — an evolving creative practice by BYSHO.">
     <title>The Signature — BYSHO</title>
-    <style>
-        :root {
-            color-scheme: dark;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #101012;
-            color: #f5f4f0;
-        }
-        * { box-sizing: border-box; }
-        body {
-            min-height: 100vh;
-            margin: 0;
-            display: grid;
-            place-items: center;
-            padding: 2rem;
-        }
-        main { width: min(100%, 64rem); }
-        p { margin: 0; }
-        .eyebrow {
-            margin-bottom: 1.5rem;
-            color: #aaa7a2;
-            font-size: .75rem;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-        }
-        h1 {
-            margin: 0;
-            font-size: clamp(3rem, 9vw, 7.5rem);
-            font-weight: 500;
-            letter-spacing: -.065em;
-            line-height: .96;
-        }
-        .note {
-            margin-top: 2rem;
-            color: #aaa7a2;
-            font-size: .95rem;
-            line-height: 1.6;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./signature.css">
 </head>
 <body>
-    <main>
-        <p class="eyebrow">BYSHO / THE SIGNATURE</p>
-        <h1>The Signature</h1>
-        <p class="note">This page is reserved for Sho's design direction. The full experience comes next.</p>
+    <canvas id="signature-field" aria-hidden="true"></canvas>
+    <div class="field-vignette" aria-hidden="true"></div>
+    <div class="field-grain" aria-hidden="true"></div>
+    <main class="signature-shell">
+        <header class="brand-lockup" aria-label="BYSHO — The Signature">
+            <span class="brand-mark">B<span>/</span>S</span>
+            <span class="brand-rule" aria-hidden="true"></span>
+            <span class="brand-copy">
+                <span class="brand-name">BYSHO</span>
+                <span class="brand-section">THE SIGNATURE&nbsp; / &nbsp;001</span>
+            </span>
+        </header>
+        <section class="field-note" aria-labelledby="signature-title">
+            <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> INDEPENDENT CREATIVE PRACTICE</p>
+            <h1 id="signature-title">THE SIGNATURE<span class="cursor-mark">_</span></h1>
+            <p class="note-copy">VISUALS / TECHNOLOGY / FILM / DESIGN<br>AND EVERYTHING IN BETWEEN.</p>
+            <p class="note-foot">ONE CREATIVE MIND.<br>MANY WAYS TO MAKE.</p>
+        </section>
+        <footer class="field-footer">
+            <span>AN ONGOING BODY OF WORK</span><span class="footer-divider" aria-hidden="true">/</span><span>BYSHO.AI</span>
+        </footer>
     </main>
+    <script type="module" src="./signature.js"></script>
 </body>
 </html>
