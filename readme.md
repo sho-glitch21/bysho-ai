@@ -30,7 +30,7 @@ BYSHO is being developed as an interactive world rather than a conventional rés
 - creative technology
 - AI and data
 - visual experiments
-- The Forge
+- BYSHO originals and experiments
 - future builds
 
 ## Credits & license

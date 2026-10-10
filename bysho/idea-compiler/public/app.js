@@ -16,14 +16,14 @@ const setList = (selector, items, ordered = false) => {
 
 compile.addEventListener('click', async () => {
   if (!idea.value.trim()) {
-    status.textContent = 'FORGE SAYS: GIVE ME AN IDEA FIRST.'
+    status.textContent = 'BYSHO SAYS: ADD AN IDEA FIRST.'
     idea.focus()
     return
   }
 
   compile.disabled = true
   result.classList.add('hidden')
-  status.textContent = 'FORGE IS THINKING...'
+  status.textContent = 'BYSHO IS THINKING...'
 
   try {
     const response = await fetch('/api/analyze', {
@@ -33,7 +33,7 @@ compile.addEventListener('click', async () => {
     })
 
     const data = await response.json()
-    if (!response.ok) throw new Error(data.error || 'Forge failed.')
+    if (!response.ok) throw new Error(data.error || 'Idea compiler failed.')
 
     document.querySelector('#verdict').textContent = data.verdict || 'MAYBE'
     document.querySelector('#problem').textContent = data.problem || ''
@@ -44,9 +44,9 @@ compile.addEventListener('click', async () => {
     setList('#nextBuild', data.nextBuild, true)
 
     result.classList.remove('hidden')
-    status.textContent = 'FORGE COMPLETE.'
+    status.textContent = 'BYSHO COMPLETE.'
   } catch (error) {
-    status.textContent = `FORGE ERROR: ${error.message}`
+    status.textContent = `IDEA COMPILER ERROR: ${error.message}`
   } finally {
     compile.disabled = false
   }
