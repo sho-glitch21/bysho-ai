@@ -1,5 +1,5 @@
 {
-  "name": "@bysho/forge-idea-compiler",
+  "name": "@bysho/idea-compiler",
   "version": "0.1.0",
   "private": true,
   "type": "module",

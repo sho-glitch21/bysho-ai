@@ -8,7 +8,7 @@ const publicDir = join(root, 'public')
 const port = Number(process.env.PORT || 8787)
 const model = process.env.OPENAI_MODEL || 'gpt-6-luna'
 
-const systemPrompt = `You are FORGE, an experimental idea-to-execution engine created by Shoaib Rahman.
+const systemPrompt = `You are BYSHO's experimental idea-to-execution engine, created by Shoaib Rahman.
 
 Your job is not to hype an idea. Make it clearer, smaller, more testable and more useful.
 
@@ -64,7 +64,7 @@ async function analyzeIdea(idea) {
       model,
       input: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Turn this rough idea into a Forge blueprint:\n\n${idea}` }
+        { role: 'user', content: `Turn this rough idea into a BYSHO blueprint:\n\n${idea}` }
       ],
       text: { format: { type: 'json_object' } }
     })
@@ -99,7 +99,7 @@ const server = http.createServer(async (req, res) => {
       const { idea } = JSON.parse(body || '{}')
 
       if (!idea || idea.trim().length < 8) {
-        return sendJson(res, 400, { error: 'Give the Forge a little more to work with.' })
+        return sendJson(res, 400, { error: 'Give the idea compiler a little more to work with.' })
       }
 
       const result = await analyzeIdea(idea.trim())
@@ -119,11 +119,11 @@ const server = http.createServer(async (req, res) => {
     res.end(content)
   } catch (error) {
     console.error(error)
-    if (!res.headersSent) sendJson(res, 500, { error: error.message || 'Forge error.' })
+    if (!res.headersSent) sendJson(res, 500, { error: error.message || 'Idea compiler error.' })
   }
 })
 
 server.listen(port, () => {
-  console.log(`FORGE // IDEA COMPILER listening on http://localhost:${port}`)
+  console.log(`BYSHO // IDEA COMPILER listening on http://localhost:${port}`)
   console.log(process.env.OPENAI_API_KEY ? 'AI mode: ON' : 'AI mode: DEMO')
 })

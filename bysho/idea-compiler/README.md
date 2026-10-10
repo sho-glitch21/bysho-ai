@@ -1,4 +1,4 @@
-# FORGE // IDEA COMPILER
+# BYSHO // IDEA COMPILER
 
 An experimental BYSHO prototype for turning rough ideas into structured things worth building.
 
@@ -6,7 +6,7 @@ An experimental BYSHO prototype for turning rough ideas into structured things w
 
 ## What it does
 
-Give the compiler a messy idea. The Forge asks an AI model to turn it into:
+Give the compiler a messy idea. BYSHO's idea compiler uses an AI model to turn it into:
 
 - the problem
 - the useful data
@@ -27,7 +27,7 @@ This prototype explores one small piece of that idea.
 Requires Node.js 18+.
 
 ```bash
-cd forge/idea-compiler
+cd bysho/idea-compiler
 npm install
 OPENAI_API_KEY=your_key_here npm start
 ```
@@ -48,13 +48,13 @@ If no API key is provided, the prototype runs in **demo mode** so the interface 
 ```
 idea
   ↓
-Forge prompt
+BYSHO prompt
   ↓
 AI model
   ↓
 structured JSON
   ↓
-Forge blueprint
+BYSHO blueprint
 ```
 
 The API key is server-side only.
@@ -72,4 +72,4 @@ Planned experiments:
 - execution planning
 - real BYSHO project generation
 
-Built at **The Forge by Shoaib Rahman**.
+Built by **Shoaib Rahman** as part of **BYSHO**.

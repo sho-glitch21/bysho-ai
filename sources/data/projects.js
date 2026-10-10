@@ -1,9 +1,9 @@
 export default [
     {
-        title: 'The Forge',
-        titleSmall: [ 'The', 'Forge' ],
+        title: 'BYSHO',
+        titleSmall: [ 'BYSHO' ],
         url: 'https://bysho.ai',
-        attributes: { role: [ 'creative headquarters', 'builder' ], with: 'BYSHO' },
+        attributes: { role: [ 'multidisciplinary creator', 'creative technology' ], with: 'BYSHO' },
         distinctions: [ ],
         images: [ 'forge-1', 'forge-2', 'forge-3' ]
     },
