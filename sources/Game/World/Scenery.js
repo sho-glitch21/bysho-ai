@@ -48,9 +48,8 @@ export class Scenery
     
     setSulBridgeDoor(model)
     {
-        // SUL is part of the scenery GLB, but its exported Blender nodes are
-        // named Cube.* rather than "SUL". These are the 13 separate letter
-        // pieces at the original river-side position.
+        // Exclude the 13 SUL letter meshes from the scene and physics build.
+        // SHOAIB RAHMAN remains the only 3D signature.
         const sulNodeNames = new Set([
             'Cube.001',
             'Cube.049',
@@ -67,33 +66,16 @@ export class Scenery
             'Cube.079'
         ])
 
-        const sulPieces = model.filter((object) => sulNodeNames.has(object.name))
-        if(sulPieces.length !== sulNodeNames.size)
+        for(let i = model.length - 1; i >= 0; i--)
         {
-            console.warn('[BYSHO] SUL placement skipped: expected 13 named scenery pieces, found', sulPieces.length)
-            return
+            if(sulNodeNames.has(model[i].name))
+            {
+                model[i].removeFromParent()
+                model.splice(i, 1)
+            }
         }
 
-        // Keep each piece's Y coordinate and its independent object/collision setup.
-        // Only move the existing letter pieces horizontally to the landing car spawn.
-        const spawn = this.game.respawns.getDefault()
-        if(!spawn)
-        {
-            console.warn('[BYSHO] SUL placement skipped: default car spawn is unavailable')
-            return
-        }
-
-        for(const piece of sulPieces)
-        {
-            piece.position.x = spawn.position.x
-            piece.position.z = spawn.position.z
-        }
-
-        console.info('[BYSHO] Positioned all 13 SUL scenery pieces at car spawn', {
-            x: spawn.position.x,
-            z: spawn.position.z,
-            pieces: sulPieces.map((piece) => piece.name)
-        })
+        console.info('[BYSHO] Excluded SUL meshes from scenery and physics build')
     }
 
     setRoad()
