@@ -210,16 +210,8 @@ export class LandingArea extends Area
                                 this.game.audio.groups.get('hitBrick').playRandomNext(force, position)
                             }
 
-                            if(prefix === 'signature')
-                                this.signature = this.signature || { letters: [] }
-
-                            if(prefix === 'signature')
-                                this.signature.letters.push(letterObject)
-                            else
-                                this.sulSignature = this.sulSignature || { letters: [] }
-
-                            if(prefix !== 'signature')
-                                this.sulSignature.letters.push(letterObject)
+                            this.signature = this.signature || { letters: [] }
+                            this.signature.letters.push(letterObject)
                         }
 
                         cursor += advance
