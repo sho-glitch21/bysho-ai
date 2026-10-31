@@ -228,8 +228,7 @@ export class LandingArea extends Area
                     }
                 }
 
-                // Main signature: individual movable letters, just like the
-                // original landing implementation — but spelling SHOAIB RAHMAN.
+                // Main signature: movable letters spelling SHOAIB RAHMAN.
                 this.signature = { letters: [] }
                 createLetterRow(
                     'SHOAIB RAHMAN',
@@ -237,52 +236,6 @@ export class LandingArea extends Area
                     targetSize.x,
                     targetSize.y,
                     'signature'
-                )
-
-                // SUL belongs by the river bridge: a deliberate little
-                // landmark, not part of the main signature. The bridge lives
-                // in the shared scenery asset, not the landing-area model.
-                let bridgeAnchor = null
-                const sceneryModel = this.game.resources.sceneryModel?.scene
-
-                sceneryModel?.traverse((_child) =>
-                {
-                    if(bridgeAnchor)
-                        return
-
-                    const name = (_child.name || '').toLowerCase()
-                    if(name.includes('bridge'))
-                        bridgeAnchor = _child
-                })
-
-                const sulCenter = new THREE.Vector3()
-
-                if(bridgeAnchor)
-                {
-                    const bridgeBounds = new THREE.Box3().setFromObject(bridgeAnchor)
-                    bridgeBounds.getCenter(sulCenter)
-                    sulCenter.y += targetSize.y * 0.62
-                }
-                else
-                {
-                    // If the bridge node is renamed in the asset, keep SUL
-                    // near the bridge-side edge of the landing area rather
-                    // than placing it beside SHOAIB again.
-                    const sulLocalOffset = new THREE.Vector3(
-                        -targetSize.x * 0.95,
-                        targetSize.y * 0.12,
-                        -targetSize.x * 0.75
-                    )
-                    sulCenter.copy(center).add(sulLocalOffset.applyQuaternion(orientation))
-                }
-
-                this.sulSignature = { letters: [] }
-                createLetterRow(
-                    'SUL',
-                    sulCenter,
-                    targetSize.x * 0.5,
-                    targetSize.y,
-                    'sul'
                 )
             },
             undefined,
