@@ -14,7 +14,7 @@ export class Scenery
         const model = [...this.game.resources.sceneryModel.scene.children]
 
         // Set SUL before objects are added so their visual and physics transforms start together.
-        this.setSulBridgeDoor(model)
+        this.removeSulMeshes(model)
         for(const child of model)
         {
             // Add
@@ -46,7 +46,7 @@ export class Scenery
         })
     }
     
-    setSulBridgeDoor(model)
+    removeSulMeshes(model)
     {
         // Exclude the 13 SUL letter meshes from the scene and physics build.
         // SHOAIB RAHMAN remains the only 3D signature.
