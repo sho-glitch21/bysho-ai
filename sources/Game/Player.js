@@ -238,6 +238,9 @@ export class Player
             { name: 'honk',                  categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.KeyH', 'Gamepad.l3' ] },
         ])
 
+        // Keep a dedicated boost button available in mobile touch mode.
+        this.game.inputs.interactiveButtons.addItems(['boost'])
+
         // Respawn
         this.game.inputs.events.on('respawn', (action) =>
         {
