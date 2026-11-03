@@ -166,6 +166,29 @@
             height 100%
             object-fit cover
 
+        // The original Options preview contains third-party creator branding.
+        // Replace that screenshot with a native BYSHO title card until an
+        // original, fully rebranded preview asset is available.
+        &.options-preview
+            background radial-gradient(ellipse at 72% 28%, #5a244c 0%, #211a2c 42%, #100f17 100%)
+
+            .background
+                display none
+
+            &::before
+                content 'BYSHO'
+                position absolute
+                inset 0
+                display flex
+                align-items center
+                justify-content center
+                color #f5d8e8
+                font-family 'Nunito', sans-serif
+                font-size clamp(2rem, 6vw, 5rem)
+                font-weight 900
+                letter-spacing 0.18em
+                text-shadow 0 0 36px rgba(238, 103, 190, 0.3)
+
         .preview
             position absolute
             top 0
