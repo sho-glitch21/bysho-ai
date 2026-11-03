@@ -102,7 +102,7 @@
 
         .boost
             position absolute
-            right 4vw
+            left 4vw
             bottom 18px
             height 58px
             min-width 108px
@@ -125,3 +125,47 @@
                 background rgba(255, 255, 255, 0.92)
                 color #1D1721
                 box-shadow 0 0 24px rgba(255, 255, 255, 0.4)
+
+
+/* Nitro boost feedback: a subtle cyan/amber energy bloom around the screen edges. */
+.boost-vfx
+    position absolute
+    inset 0
+    z-index 4
+    pointer-events none
+    opacity 0
+    background radial-gradient(ellipse at center, transparent 45%, rgba(42, 220, 255, 0.08) 72%, rgba(255, 135, 55, 0.22) 100%)
+    transition opacity 180ms ease-out
+
+    &::before
+        content ''
+        position absolute
+        inset 0
+        background linear-gradient(110deg, transparent 35%, rgba(105, 232, 255, 0.12) 50%, transparent 65%)
+        transform translateX(-100%)
+        opacity 0
+
+html.is-boosting
+    .boost-vfx
+        opacity 1
+        animation nitro-pulse 420ms ease-in-out infinite alternate
+
+        &::before
+            opacity 1
+            animation nitro-streak 520ms linear infinite
+
+    .touch-buttons .boost
+        border-color rgba(100, 235, 255, 0.98)
+        box-shadow 0 0 22px rgba(42, 220, 255, 0.55), inset 0 0 14px rgba(42, 220, 255, 0.15)
+
+@keyframes nitro-pulse
+    from
+        opacity 0.55
+    to
+        opacity 1
+
+@keyframes nitro-streak
+    from
+        transform translateX(-100%)
+    to
+        transform translateX(100%)
