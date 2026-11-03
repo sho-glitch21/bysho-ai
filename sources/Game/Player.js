@@ -610,11 +610,10 @@ export class Player
         // View > Focus point
         this.game.view.focusPoint.trackedPosition.copy(this.position)
 
-        // View > Speed lines
-        if(this.boosting && this.accelerating && this.game.physicalVehicle.speed > 15)
-            this.game.view.speedLines.strength = 1
-        else
-            this.game.view.speedLines.strength = 0
+        // View > Speed lines and boost VFX
+        const boostEffectActive = this.boosting && this.accelerating > 0 && this.game.physicalVehicle.speed > 5
+        this.game.view.speedLines.strength = boostEffectActive ? 1 : 0
+        document.documentElement.classList.toggle('is-boosting', boostEffectActive)
 
         this.game.view.speedLines.worldTarget.copy(this.position)
 
