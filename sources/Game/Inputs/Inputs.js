@@ -149,16 +149,6 @@ export class Inputs
     {
         this.interactiveButtons = new InteractiveButtons()
 
-        // Mobile boost is a hold action, so release it as soon as the finger lifts.
-        this.interactiveButtons.events.on('boostStart', () =>
-        {
-            this.updateMode(Inputs.MODE_TOUCH)
-            this.start('Touch.boost')
-        })
-        this.interactiveButtons.events.on('boostEnd', () =>
-        {
-            this.end('Touch.boost')
-        })
     }
 
     setNipple()
