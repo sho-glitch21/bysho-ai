@@ -222,7 +222,7 @@ export class Player
             { name: 'right',                 categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.ArrowRight', 'Keyboard.KeyD', 'Gamepad.right' ] },
             { name: 'backward',              categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.ArrowDown', 'Keyboard.KeyS', 'Gamepad.down', 'Gamepad.l2' ] },
             { name: 'left',                  categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.ArrowLeft', 'Keyboard.KeyA', 'Gamepad.left' ] },
-            { name: 'boost',                 categories: [ 'wandering', 'racing'              ], keys: [ 'Keyboard.ShiftLeft', 'Keyboard.ShiftRight', 'Gamepad.circle', 'Touch.boost' ] },
+            { name: 'boost',                 categories: [ 'wandering', 'racing'              ], keys: [ 'Keyboard.ShiftLeft', 'Keyboard.ShiftRight', 'Gamepad.circle' ] },
             { name: 'brake',                 categories: [ 'wandering', 'racing'              ], keys: [ 'Keyboard.KeyB', 'Keyboard.ControlLeft', 'Gamepad.square' ] },
             { name: 'respawn',               categories: [ 'wandering',                       ], keys: [ 'Keyboard.KeyR', 'Gamepad.select' ] },
             { name: 'suspensions',           categories: [ 'wandering', 'racing'              ], keys: [ 'Keyboard.Numpad5', 'Keyboard.Space', 'Gamepad.triangle' ] },
@@ -237,9 +237,6 @@ export class Player
             { name: 'interact',              categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.Enter', 'Keyboard.KeyE', 'Keyboard.KeyF', 'Gamepad.cross' ] },
             { name: 'honk',                  categories: [ 'wandering', 'racing', 'cinematic' ], keys: [ 'Keyboard.KeyH', 'Gamepad.l3' ] },
         ])
-
-        // Keep a dedicated boost button available in mobile touch mode.
-        this.game.inputs.interactiveButtons.addItems(['boost'])
 
         // Respawn
         this.game.inputs.events.on('respawn', (action) =>
@@ -610,10 +607,11 @@ export class Player
         // View > Focus point
         this.game.view.focusPoint.trackedPosition.copy(this.position)
 
-        // View > Speed lines and boost VFX
-        const boostEffectActive = this.boosting && this.accelerating > 0 && this.game.physicalVehicle.speed > 5
-        this.game.view.speedLines.strength = boostEffectActive ? 1 : 0
-        document.documentElement.classList.toggle('is-boosting', boostEffectActive)
+        // View > Speed lines
+        if(this.boosting && this.accelerating && this.game.physicalVehicle.speed > 15)
+            this.game.view.speedLines.strength = 1
+        else
+            this.game.view.speedLines.strength = 0
 
         this.game.view.speedLines.worldTarget.copy(this.position)
 
