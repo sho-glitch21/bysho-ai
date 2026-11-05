@@ -28,26 +28,6 @@ export class InteractiveButtons
             
             this.items.set(item.name, item)
 
-            if(item.name === 'boost')
-            {
-                item.element.addEventListener('pointerdown', (event) =>
-                {
-                    event.preventDefault()
-                    item.element.setPointerCapture?.(event.pointerId)
-                    item.element.classList.add('is-pressed')
-                    this.events.trigger('boostStart')
-                })
-                const releaseBoost = (event) =>
-                {
-                    if(event)
-                        event.preventDefault()
-                    item.element.classList.remove('is-pressed')
-                    this.events.trigger('boostEnd')
-                }
-                item.element.addEventListener('pointerup', releaseBoost)
-                item.element.addEventListener('pointercancel', releaseBoost)
-                item.element.addEventListener('lostpointercapture', releaseBoost)
-            }
 
             item.element.addEventListener('click', () =>
             {
